@@ -33,8 +33,7 @@ col_logo, col_title = st.columns([1,3])
 with col_logo:
     st.image(logo, use_container_width=True)
 with col_title:
-    st.title("🌱 Guia de Plantas — 1 imagem")
-    st.caption("Festival de Flores de Holambra")
+    st.title("Guia de Plantas - 2025")
 
 # ---- Funções utilitárias ----
 def normalize(s: str) -> str:
