@@ -7,7 +7,7 @@ from urllib.parse import quote
 from PIL import Image
 
 # ---- CONFIGURAÇÃO GERAL ----
-st.set_page_config(page_title="Guia de Plantas - Festival de Flores de Holambra 2025", page_icon="🌱", layout="wide")
+st.set_page_config(page_title="Guia de Plantas - 2025, page_icon="🌱", layout="wide")
 
 # ---- CSS personalizado (tema amarelo + cartões brancos) ----
 st.markdown("""
@@ -28,10 +28,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---- Cabeçalho com logo ----
-logo = Image.open("logo_ffh.jpg")
+logo = Image.open("logo_ffh.png")
 col_logo, col_title = st.columns([1,3])
 with col_logo:
-    st.image(logo, use_column_width=True)
+    st.image(logo, use_container_width=True)
 with col_title:
     st.title("🌱 Guia de Plantas — 1 imagem")
     st.caption("Festival de Flores de Holambra")
@@ -157,7 +157,7 @@ if not filtered.empty:
     with c2:
         im = one_image_any_site(sel)
         if im:
-            st.image(im["src"], caption=f"{im['title']} — fonte externa", use_column_width=True)
+            st.image(im["src"], caption=f"{im['title']} — fonte externa", use_container_width=True)
             if im.get("page"):
                 st.markdown(f"[Abrir página de origem]({im['page']})")
         else:
@@ -166,6 +166,8 @@ if not filtered.empty:
 else:
     st.warning("Nenhum resultado. Tente outro termo.")
 
+# ---- Rodapé ----
 st.divider()
 st.caption("Fonte dos dados: Guia de Plantas (PDF convertido). O app busca apenas **1** imagem em site externo (Wikipedia → DuckDuckGo).")
+st.markdown("📸 Acompanhe também no Instagram: [Festival de Flores de Holambra SLZ](https://www.instagram.com/floresdeholambraslz/)")
 
