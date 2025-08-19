@@ -7,7 +7,7 @@ from urllib.parse import quote
 from PIL import Image
 
 # ---- CONFIGURAÇÃO GERAL ----
-st.set_page_config(page_title="Guia de Plantas • 1 imagem", page_icon="🌱", layout="wide")
+st.set_page_config(page_title="Guia de Plantas - Festival de Flores de Holambra 2025", page_icon="🌱", layout="wide")
 
 # ---- CSS personalizado (tema amarelo + cartões brancos) ----
 st.markdown("""
