@@ -55,7 +55,7 @@ col_logo, col_title = st.columns([1,3])
 with col_logo:
     st.image(logo, use_container_width=True)
 with col_title:
-    st.markdown('<h1 class="app-title">Guia de Plantas - 2025</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="app-title">Guia de Plantas</h1>', unsafe_allow_html=True)
 
 # ---- Funções utilitárias ----
 def normalize(s: str) -> str:
