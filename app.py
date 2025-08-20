@@ -7,7 +7,7 @@ from urllib.parse import quote
 from PIL import Image
 
 # ---- CONFIGURAÇÃO GERAL ----
-st.set_page_config(page_title="Guia de Plantas - 2025", layout="wide")
+st.set_page_config(page_title="Guia de Plantas", layout="wide")
 
 # ---- CSS personalizado (mobile-friendly) ----
 st.markdown("""
