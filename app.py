@@ -9,31 +9,53 @@ from PIL import Image
 # ---- CONFIGURAÇÃO GERAL ----
 st.set_page_config(page_title="Guia de Plantas - 2025", layout="wide")
 
-# ---- CSS personalizado (tema amarelo + cartões brancos) ----
+# ---- CSS personalizado (mobile-friendly) ----
 st.markdown("""
 <style>
-.stApp {
-  background: #F4C300 !important; /* amarelo festival */
-}
+/* Fundo e container */
+.stApp { background: #F4C300 !important; }
 .main .block-container {
   background: #ffffff;
-  padding: 2rem 2rem 3rem 2rem;
+  padding: 1.25rem 1rem 2rem 1rem;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
-.css-10trblm, .stTextInput>div>div>input { 
-  background: #fff !important; 
+
+/* Título em uma linha + responsivo */
+.app-title {
+  white-space: nowrap;
+  margin: .25rem 0 .5rem 0;
+  line-height: 1.1;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 6vw, 2.8rem);
+}
+
+/* Texto do input: preto; placeholder mais escuro para contraste */
+.stTextInput input {
+  color: #000 !important;
+  background: #fff !important;
+}
+.stTextInput input::placeholder {
+  color: #222 !important;
+  opacity: .7;
+}
+
+/* Rótulos (Exposição, Rega, etc.) um pouco maiores */
+.plant-details strong, .plant-details b {
+  font-size: clamp(1.00rem, 3.5vw, 1.25rem);
+  color: #1f2937;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---- Cabeçalho com logo ----
+# use "logo_ffh.png" conforme seu arquivo; se tiver versão transparente, pode trocar pelo PNG transparente
 logo = Image.open("logo_ffh.png")
 col_logo, col_title = st.columns([1,3])
 with col_logo:
     st.image(logo, use_container_width=True)
 with col_title:
-    st.title("Guia de Plantas - 2025")
+    st.markdown('<h1 class="app-title">Guia de Plantas - 2025</h1>', unsafe_allow_html=True)
 
 # ---- Funções utilitárias ----
 def normalize(s: str) -> str:
@@ -78,9 +100,9 @@ def wiki_first_image(query: str, lang="pt"):
 def duckduckgo_first_image(query: str):
     try:
         html = requests.get(
-            "https://duckduckgo.com/", 
-            params={"q": query, "iax":"images","ia":"images"}, 
-            timeout=10, 
+            "https://duckduckgo.com/",
+            params={"q": query, "iax":"images","ia":"images"},
+            timeout=10,
             headers={"User-Agent":"Mozilla/5.0"}
         ).text
         m = re.search(r'"image":"(https:[^"]+)"', html)
@@ -91,12 +113,19 @@ def duckduckgo_first_image(query: str):
         return None
     return None
 
-def one_image_any_site(query: str):
-    im = wiki_first_image(query + " planta", lang="pt")
+def one_image_any_site(plant_name: str):
+    """
+    Força contexto botânico para reduzir falsos positivos de homônimos.
+    """
+    q_pt  = f"{plant_name} planta botânica"
+    q_pt2 = f"{plant_name} planta horticultura"
+    q_en  = f"{plant_name} plant botany"
+
+    im = wiki_first_image(q_pt,  lang="pt") or wiki_first_image(q_pt2, lang="pt")
     if im: return im
-    im = wiki_first_image(query + " plant", lang="en")
+    im = wiki_first_image(q_en,  lang="en")
     if im: return im
-    im = duckduckgo_first_image(query + " plant")
+    im = duckduckgo_first_image(q_pt) or duckduckgo_first_image(q_en)
     if im: return im
     return None
 
@@ -146,13 +175,16 @@ if not filtered.empty:
     row = df[df["planta"] == sel].iloc[0]
 
     st.subheader(sel)
+
+    # Container com classe para aumentar os rótulos
+    st.markdown('<div class="plant-details">', unsafe_allow_html=True)
     c1, c2 = st.columns([1,1])
     with c1:
-        st.markdown(f"**Exposição ao Sol:** {row['exposicao'] if isinstance(row['exposicao'], str) else '-'}")
-        st.markdown(f"**Rega:** {row['rega'] if isinstance(row['rega'], str) else '-'}")
-        st.markdown(f"**Ambiente:** {row['ambiente'] if isinstance(row['ambiente'], str) else '-'}")
-        st.markdown(f"**Poda:** {row['poda'] if isinstance(row['poda'], str) else '-'}")
-        st.markdown(f"**Adubo:** {row['adubo'] if isinstance(row['adubo'], str) else '-'}")
+        st.markdown(f"<strong>Exposição ao Sol:</strong> {row['exposicao'] if isinstance(row['exposicao'], str) else '-'}", unsafe_allow_html=True)
+        st.markdown(f"<strong>Rega:</strong> {row['rega'] if isinstance(row['rega'], str) else '-'}", unsafe_allow_html=True)
+        st.markdown(f"<strong>Ambiente:</strong> {row['ambiente'] if isinstance(row['ambiente'], str) else '-'}", unsafe_allow_html=True)
+        st.markdown(f"<strong>Poda:</strong> {row['poda'] if isinstance(row['poda'], str) else '-'}", unsafe_allow_html=True)
+        st.markdown(f"<strong>Adubo:</strong> {row['adubo'] if isinstance(row['adubo'], str) else '-'}", unsafe_allow_html=True)
     with c2:
         im = one_image_any_site(sel)
         if im:
@@ -161,12 +193,14 @@ if not filtered.empty:
                 st.markdown(f"[Abrir página de origem]({im['page']})")
         else:
             st.info("Não encontrei imagem automática. Você pode adicionar uma foto local na pasta `images/`.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 else:
     st.warning("Nenhum resultado. Tente outro termo.")
 
 # ---- Rodapé ----
 st.divider()
-st.caption("Fonte dos dados: Guia de Plantas (PDF convertido). O app busca apenas **1** imagem em site externo (Wikipedia → DuckDuckGo).")
+st.caption("Fonte dos dados: Guia de Plantas (PDF convertido). O app busca apenas **1** imagem (Wikipedia → DuckDuckGo) com viés botânico.")
 st.markdown("📸 Acompanhe também no Instagram: [Festival de Flores de Holambra SLZ](https://www.instagram.com/floresdeholambraslz/)")
+
 
