@@ -200,7 +200,6 @@ else:
 
 # ---- Rodapé ----
 st.divider()
-st.caption("Fonte dos dados: Guia de Plantas (PDF convertido). O app busca apenas **1** imagem (Wikipedia → DuckDuckGo) com viés botânico.")
 st.markdown("📸 Acompanhe também no Instagram: [Festival de Flores de Holambra SLZ](https://www.instagram.com/floresdeholambraslz/)")
 
 
