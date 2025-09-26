@@ -1,8 +1,9 @@
+# app.py — Guia de Plantas (com correção da busca de imagens via Wikipédia/Commons)
+
 import streamlit as st
 import pandas as pd
 import requests
 import unicodedata
-import re
 from urllib.parse import quote
 from PIL import Image
 
@@ -49,7 +50,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---- Cabeçalho com logo ----
-# use "logo_ffh.png" conforme seu arquivo; se tiver versão transparente, pode trocar pelo PNG transparente
 logo = Image.open("logo_ffh.png")
 col_logo, col_title = st.columns([1,3])
 with col_logo:
@@ -70,64 +70,117 @@ def load_data():
     df["planta_norm"] = df["planta"].apply(normalize)
     return df
 
-def wiki_first_image(query: str, lang="pt"):
-    base = f"https://{lang}.wikipedia.org/w/api.php"
-    params = {
-        "action": "query",
-        "format": "json",
-        "generator": "search",
-        "gsrsearch": query,
-        "gsrlimit": 1,
-        "prop": "pageimages|info",
-        "inprop": "url",
-        "piprop": "thumbnail",
-        "pithumbsize": 1024,
-    }
+# ======= CORREÇÃO DA BUSCA DE IMAGENS =======
+def _wiki_search_title(query: str, lang: str = "pt") -> str | None:
+    """Busca o melhor título de página usando a API 'list=search' da Wikipédia."""
     try:
-        r = requests.get(base, params=params, timeout=10)
-        if r.status_code == 200:
-            js = r.json()
-            pages = js.get("query", {}).get("pages", {})
-            if pages:
-                p = next(iter(pages.values()))
-                thumb = p.get("thumbnail", {}).get("source")
-                if thumb:
-                    return {"src": thumb, "page": p.get("fullurl"), "title": p.get("title")}
+        r = requests.get(
+            f"https://{lang}.wikipedia.org/w/api.php",
+            params={
+                "action": "query",
+                "format": "json",
+                "list": "search",
+                "srsearch": query,
+                "srlimit": 1,
+            },
+            timeout=10,
+        )
+        r.raise_for_status()
+        js = r.json()
+        items = js.get("query", {}).get("search", [])
+        if items:
+            return items[0].get("title")
     except Exception:
         pass
     return None
 
-def duckduckgo_first_image(query: str):
+def _wiki_summary_image_by_title(title: str, lang: str = "pt") -> dict | None:
+    """Usa a API REST 'page/summary' para obter thumbnail/original e URL da página."""
     try:
-        html = requests.get(
-            "https://duckduckgo.com/",
-            params={"q": query, "iax":"images","ia":"images"},
+        summary = requests.get(
+            f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/{quote(title)}",
             timeout=10,
-            headers={"User-Agent":"Mozilla/5.0"}
-        ).text
-        m = re.search(r'"image":"(https:[^"]+)"', html)
-        if m:
-            url = m.group(1).encode("utf-8").decode("unicode_escape")
-            return {"src": url, "page": f"https://duckduckgo.com/?q={quote(query)}&iax=images&ia=images", "title": query}
+            headers={"Accept": "application/json"},
+        )
+        summary.raise_for_status()
+        js = summary.json()
+        src = (js.get("originalimage") or {}).get("source") or (js.get("thumbnail") or {}).get("source")
+        page = js.get("content_urls", {}).get("desktop", {}).get("page")
+        if src:
+            return {"src": src, "page": page, "title": js.get("title", title)}
     except Exception:
-        return None
+        pass
     return None
 
-def one_image_any_site(plant_name: str):
+def wiki_first_image(query: str, lang: str = "pt") -> dict | None:
+    """Pipeline robusto: busca o título e puxa imagem via REST Summary."""
+    title = _wiki_search_title(query, lang=lang)
+    if not title:
+        return None
+    return _wiki_summary_image_by_title(title, lang=lang)
+
+def commons_first_image(query: str) -> dict | None:
+    """Fallback: busca direto por arquivos (namespace 6) no Wikimedia Commons."""
+    try:
+        r = requests.get(
+            "https://commons.wikimedia.org/w/api.php",
+            params={
+                "action": "query",
+                "format": "json",
+                "generator": "search",
+                "gsrsearch": query,
+                "gsrlimit": 1,
+                "gsrnamespace": 6,  # somente arquivos
+                "prop": "imageinfo|info",
+                "inprop": "url",
+                "iiprop": "url",
+                "iiurlwidth": 1024,
+            },
+            timeout=10,
+        )
+        r.raise_for_status()
+        js = r.json()
+        pages = js.get("query", {}).get("pages", {})
+        if not pages:
+            return None
+        p = next(iter(pages.values()))
+        infos = p.get("imageinfo") or []
+        if infos:
+            ii = infos[0]
+            src = ii.get("thumburl") or ii.get("url")
+            if src:
+                return {
+                    "src": src,
+                    "page": p.get("fullurl") or f"https://commons.wikimedia.org/wiki/{quote(p.get('title',''))}",
+                    "title": p.get("title", query),
+                }
+    except Exception:
+        pass
+    return None
+
+def one_image_any_site(plant_name: str) -> dict | None:
     """
-    Força contexto botânico para reduzir falsos positivos de homônimos.
+    Prioriza Wikipédia em PT; depois EN; por fim Commons.
+    Mantém contexto botânico para evitar homônimos.
     """
-    q_pt  = f"{plant_name} planta botânica"
-    q_pt2 = f"{plant_name} planta horticultura"
-    q_en  = f"{plant_name} plant botany"
+    q_pt  = f"{plant_name} (planta)"
+    q_pt2 = f"{plant_name} botânica"
+    q_en  = f"{plant_name} (plant)"
 
     im = wiki_first_image(q_pt,  lang="pt") or wiki_first_image(q_pt2, lang="pt")
-    if im: return im
+    if im:
+        return im
+
     im = wiki_first_image(q_en,  lang="en")
-    if im: return im
-    im = duckduckgo_first_image(q_pt) or duckduckgo_first_image(q_en)
-    if im: return im
+    if im:
+        return im
+
+    im = commons_first_image(f"{plant_name} flower") or commons_first_image(f"{plant_name} plant")
+    if im:
+        return im
+
     return None
+# ======= FIM DA CORREÇÃO =======
 
 # ---- Carregar base ----
 df = load_data()
@@ -201,5 +254,3 @@ else:
 # ---- Rodapé ----
 st.divider()
 st.markdown("📸 Acompanhe também no Instagram: [Festival de Flores de Holambra SLZ](https://www.instagram.com/floresdeholambraslz/)")
-
-
