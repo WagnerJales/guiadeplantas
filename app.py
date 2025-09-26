@@ -126,4 +126,9 @@ else:
 # ---- Rodapé ----
 st.divider()
 st.markdown("📸 Acompanhe também no Instagram: [Festival de Flores de Holambra SLZ](https://www.instagram.com/floresdeholambraslz/)")
-
+st.markdown("### 🌿 Nossos parceiros:")
+st.markdown("- [Brechó da Amizade](https://www.instagram.com/brechodaamizade_/)")
+st.markdown("- [Olaria do Amarildo](https://www.instagram.com/olariadoamarildo/)")
+st.markdown("- [Arte e Paisagem](https://www.instagram.com/arteepaisagemoficial/)")
+st.markdown("- [Galeria Formosa](https://www.instagram.com/galeriaformosa/)")
+st.markdown("- [Uniflores](https://www.instagram.com/unifloresholambra/)")
