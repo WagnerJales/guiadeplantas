@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Plantas — Festival de Flores de Holambra</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:       #D95A6F;
+    --rose-deep:  #B8394E;
+    --rose-light: #EF8FA0;
+    --rose-pale:  #FDE8EF;
+    --blush:      #FAE4EC;
+    --petal:      #F4AABB;
+    --cream:      #FFF7F9;
+    --text:       #2D1218;
+    --muted:      #A07080;
+    --white:      #FFFFFF;
+    --radius:     14px;
+    --shadow:     0 4px 24px rgba(180,60,90,0.13);
+    --shadow-card:0 2px 16px rgba(180,60,90,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blush);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── PETALS ────────────────────────────────────────────── */
+  .petals {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .petal {
+    position: absolute;
+    top: -60px;
+    width: clamp(14px, 3vw, 26px);
+    aspect-ratio: 1.4;
+    background: radial-gradient(ellipse at 40% 40%, #f9b8cb, #e88fa8 60%, #d4607a);
+    border-radius: 50% 10% 50% 10%;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0)   rotate(0deg)   scale(1);   opacity: .85; }
+    80%  { opacity: .6; }
+    100% { transform: translateY(110vh) rotate(360deg) scale(.7); opacity: 0; }
+  }
+  .petal:nth-child(1)  { left:  5%; animation-duration:7s;  animation-delay:0s;   width:18px; }
+  .petal:nth-child(2)  { left: 12%; animation-duration:9s;  animation-delay:1.5s; width:14px; }
+  .petal:nth-child(3)  { left: 22%; animation-duration:8s;  animation-delay:3s;   width:22px; }
+  .petal:nth-child(4)  { left: 33%; animation-duration:6s;  animation-delay:0.5s; width:16px; }
+  .petal:nth-child(5)  { left: 45%; animation-duration:10s; animation-delay:2s;   width:20px; }
+  .petal:nth-child(6)  { left: 55%; animation-duration:7.5s;animation-delay:4s;   width:12px; }
+  .petal:nth-child(7)  { left: 65%; animation-duration:9s;  animation-delay:1s;   width:24px; }
+  .petal:nth-child(8)  { left: 75%; animation-duration:6.5s;animation-delay:3.5s; width:15px; }
+  .petal:nth-child(9)  { left: 83%; animation-duration:8.5s;animation-delay:0.8s; width:19px; }
+  .petal:nth-child(10) { left: 92%; animation-duration:7s;  animation-delay:2.5s; width:13px; }
+
+  /* ── HERO ──────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(160deg, #fce8f0 0%, #f9d6e6 50%, #f5c4d8 100%);
+    padding: 1.5rem 1.25rem 0;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  @media (min-width: 600px) { .hero { padding: 2.25rem 2rem 0; } }
+
+  /* radial glow like the posts */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 60%,
+      rgba(255,255,255,0.55) 0%,
+      rgba(255,200,220,0.2) 50%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-icon {
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    line-height: 1;
+    flex-shrink: 0;
+    animation: sway 5s ease-in-out infinite;
+    filter: drop-shadow(0 2px 6px rgba(180,60,90,0.25));
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-4deg) translateY(0); }
+    50%       { transform: rotate(4deg)  translateY(-4px); }
+  }
+  .hero-text {}
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--rose);
+    margin-bottom: 0.2rem;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 7vw, 3.8rem);
+    font-weight: 900;
+    color: var(--rose);
+    line-height: 1;
+    text-shadow: 0 2px 12px rgba(180,60,90,0.15);
+  }
+  .hero-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    color: var(--rose-deep);
+    font-weight: 400;
+    margin-top: 0.25rem;
+    letter-spacing: .01em;
+  }
+  .hero-wave {
+    display: block;
+    width: calc(100% + 2.5rem);
+    margin-left: -1.25rem;
+    height: 36px;
+    margin-top: 0.75rem;
+    position: relative;
+    z-index: 2;
+  }
+  @media (min-width: 600px) {
+    .hero-wave { width: calc(100% + 4rem); margin-left: -2rem; height: 48px; }
+  }
+
+  /* ── SHELL ─────────────────────────────────────────────── */
+  .shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 0.875rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 600px) { .shell { padding: 2rem 1.25rem 4rem; } }
+
+  /* ── CONTROLS ──────────────────────────────────────────── */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+    align-items: center;
+  }
+  .search-wrap    { grid-column: 1; }
+  .filter-btn-wrap{ grid-column: 2; }
+  .results-count  { grid-column: 1 / -1; }
+  @media (min-width: 600px) {
+    .controls { grid-template-columns: 1fr auto auto; grid-template-rows: auto; }
+    .search-wrap, .filter-btn-wrap, .results-count { grid-column: auto; }
+  }
+
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.6rem;
+    border: 2px solid transparent;
+    border-radius: 99px;
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-card);
+    -webkit-appearance: none;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--rose-light);
+    box-shadow: 0 0 0 4px rgba(217,90,111,0.12);
+  }
+  .search-input::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.8rem 1.1rem;
+    border: none;
+    border-radius: 99px;
+    background: var(--rose);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 4px 14px rgba(217,90,111,0.35);
+  }
+  .filter-btn:hover { background: var(--rose-deep); transform: translateY(-1px); }
+  .filter-btn:active { transform: translateY(0); }
+  .filter-btn.active {
+    background: var(--white);
+    color: var(--rose);
+    box-shadow: 0 0 0 2px var(--rose);
+  }
+
+  .results-count {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 400;
+  }
+
+  /* ── FILTER PANEL ──────────────────────────────────────── */
+  .filter-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.1rem;
+    box-shadow: var(--shadow-card);
+    display: none;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    border: 1.5px solid var(--rose-pale);
+  }
+  .filter-panel.open { display: grid; }
+  @media (min-width: 540px) {
+    .filter-panel { grid-template-columns: 1fr 1fr; padding: 1.25rem; gap: 1.5rem; }
+  }
+
+  .filter-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--rose);
+    margin-bottom: 0.5rem;
+  }
+  .chip-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chip {
+    padding: 0.4rem 0.9rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--petal);
+    background: var(--rose-pale);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--rose-deep);
+    font-weight: 500;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .chip:hover { border-color: var(--rose); background: #fbd4de; }
+  .chip.selected { background: var(--rose); color: var(--white); border-color: var(--rose); }
+
+  /* ── PLANT GRID ────────────────────────────────────────── */
+  .plant-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+  @media (min-width: 480px)  { .plant-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 800px)  { .plant-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
+  @media (min-width: 1060px) { .plant-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .plant-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.3s ease both;
+    -webkit-tap-highlight-color: transparent;
+    border: 1.5px solid rgba(217,90,111,0.08);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (hover: hover) {
+    .plant-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(180,60,90,0.18);
+      border-color: rgba(217,90,111,0.22);
+    }
+  }
+
+  .card-header {
+    background: linear-gradient(120deg, var(--rose-pale) 0%, #fce0ea 100%);
+    padding: 0.9rem 1rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--rose-deep);
+    line-height: 1.2;
+    flex: 1;
+  }
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.2rem 0.55rem;
+    border-radius: 99px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .badge-int  { background: #e8f0fd; color: #3b5bdb; }
+  .badge-ext  { background: #fff4e0; color: #b06820; }
+  .badge-both { background: var(--rose-pale); color: var(--rose-deep); }
+
+  .card-body {
+    padding: 0.8rem 1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .info-row {
+    display: flex;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--text);
+    align-items: flex-start;
+  }
+  .info-icon  { flex-shrink: 0; width: 1.2rem; }
+  .info-label { color: var(--muted); font-weight: 300; min-width: 3.25rem; }
+  .info-val   { flex: 1; font-weight: 400; }
+
+  /* ── MODAL ─────────────────────────────────────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(45,18,24,0.55);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  @media (min-width: 560px) { .overlay { align-items: center; padding: 1rem; } }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 -8px 40px rgba(180,60,90,0.2);
+    animation: slideUp 0.28s cubic-bezier(.32,1,.56,1);
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (min-width: 560px) {
+    .modal {
+      border-radius: 20px;
+      max-width: 560px;
+      max-height: 90vh;
+      box-shadow: 0 24px 80px rgba(180,60,90,0.3);
+      animation: popIn 0.25s ease;
+    }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.93); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+  .modal::before {
+    content: '';
+    display: block;
+    width: 40px; height: 4px;
+    background: var(--petal);
+    border-radius: 99px;
+    margin: 10px auto 0;
+  }
+  @media (min-width: 560px) { .modal::before { display: none; } }
+
+  .modal-banner {
+    background: linear-gradient(135deg, var(--rose-deep) 0%, var(--rose) 60%, var(--rose-light) 100%);
+    padding: 1.1rem 1.25rem 1rem;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.875rem;
+    min-height: 90px;
+  }
+  @media (min-width: 560px) { .modal-banner { padding: 1.5rem; min-height: 105px; } }
+
+  /* radial bloom on banner */
+  .modal-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 100% at 80% 50%,
+      rgba(255,255,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .modal-banner-icon {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.2));
+    position: relative; z-index: 1;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 5vw, 1.75rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    flex: 1;
+    position: relative; z-index: 1;
+  }
+  .modal-close {
+    position: absolute;
+    top: 0.875rem; right: 0.875rem;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+    z-index: 2;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.35); }
+
+  .modal-body { padding: 1.1rem 1.1rem 1.5rem; }
+  @media (min-width: 560px) { .modal-body { padding: 1.5rem; } }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  @media (max-width: 400px) { .detail-grid { grid-template-columns: 1fr; } }
+
+  .detail-tile {
+    background: var(--rose-pale);
+    border-radius: 10px;
+    padding: 0.9rem;
+    border-left: 4px solid var(--rose-light);
+  }
+  .detail-tile.t-rega  { border-left-color: #60b4fa; background: #edf4fe; }
+  .detail-tile.t-amb   { border-left-color: #82c87a; background: #edfaeb; }
+  .detail-tile.t-poda  { border-left-color: #f0a060; background: #fef3e6; }
+  .detail-tile.t-adubo { border-left-color: var(--petal); background: var(--rose-pale); }
+
+  .detail-tile-head {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .detail-tile-val {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  /* ── EMPTY ─────────────────────────────────────────────── */
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+  .empty p { font-size: 0.95rem; }
+
+  /* ── FOOTER ────────────────────────────────────────────── */
+  .footer {
+    border-top: 1px solid rgba(217,90,111,0.15);
+    padding: 1.75rem 0.875rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  @media (min-width: 600px) { .footer { padding: 2rem 1.25rem; } }
+
+  .footer-title {
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 0.75rem;
+  }
+  .partner-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .partner-link {
+    color: var(--rose-deep);
+    text-decoration: none;
+    font-size: 0.83rem;
+    background: var(--white);
+    border: 1.5px solid var(--petal);
+    padding: 0.3rem 0.75rem;
+    border-radius: 99px;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .partner-link:hover { background: var(--rose); color: var(--white); border-color: var(--rose); }
+  .footer-ig {
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+  .footer-ig a { color: var(--rose); font-weight: 500; text-decoration: none; }
+  .footer-ig a:hover { text-decoration: underline; }
+
+  /* ── FESTIVAL BANNER ───────────────────────────────────── */
+  .festival-banner {
+    background: linear-gradient(110deg, var(--rose-pale) 0%, #fce0ea 100%);
+    border: 1.5px solid var(--petal);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .festival-banner-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .festival-banner-text { flex: 1; min-width: 0; }
+  .festival-banner-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--rose-deep);
+    line-height: 1.2;
+  }
+  .festival-banner-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+  .festival-pill {
+    background: var(--rose);
+    color: var(--white);
+    border-radius: 99px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- FLOATING PETALS -->
+<div class="petals" aria-hidden="true">
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-icon">🌸</div>
+      <div class="hero-text">
+        <p class="hero-eyebrow">18° Festival · Rio Anil Shopping</p>
+        <h1 class="hero-title">Guia de Plantas</h1>
+        <p class="hero-subtitle">Flores de Holambra SLZ — 04 a 31 de Maio</p>
+      </div>
+    </div>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,0 C360,48 1080,48 1440,0 L1440,48 L0,48 Z" fill="#FAE4EC"/>
+  </svg>
+</div>
+
+<!-- MAIN -->
+<div class="shell">
+
+  <!-- FESTIVAL BANNER -->
+  <div class="festival-banner">
+    <div class="festival-banner-icon">📸</div>
+    <div class="festival-banner-text">
+      <div class="festival-banner-title">Sua foto pode virar uma planta nova!</div>
+      <div class="festival-banner-sub">Poste com sua planta, marque <strong>@floresdeholambraslz</strong> e concorra toda sexta ao vivo.</div>
+    </div>
+    <span class="festival-pill">🔴 AO VIVO</span>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text"
+             placeholder="Busque: Alecrim, Orquídea, Kalanchoe…" autocomplete="off">
+    </div>
+    <div class="filter-btn-wrap">
+      <button class="filter-btn" id="filterToggle" onclick="toggleFilters()">
+        <span>⚙️</span> Filtros
+      </button>
+    </div>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <!-- FILTER PANEL -->
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-group">
+      <label>Ambiente</label>
+      <div class="chip-list" id="ambienteChips"></div>
+    </div>
+    <div class="filter-group">
+      <label>Exposição ao Sol</label>
+      <div class="chip-list" id="exposicaoChips"></div>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="plant-grid" id="plantGrid"></div>
+  <div class="empty" id="emptyState" style="display:none">
+    <div class="empty-icon">🍂</div>
+    <p>Nenhuma planta encontrada.<br>Tente outro termo ou ajuste os filtros.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p class="footer-title">Nossos parceiros</p>
+  <div class="partner-list">
+    <a class="partner-link" href="https://www.instagram.com/brechodaamizade_/" target="_blank">Brechó da Amizade</a>
+    <a class="partner-link" href="https://www.instagram.com/olariadoamarildo/" target="_blank">Olaria do Amarildo</a>
+    <a class="partner-link" href="https://www.instagram.com/arteepaisagemoficial/" target="_blank">Arte e Paisagem</a>
+    <a class="partner-link" href="https://www.instagram.com/unifloresholambra/" target="_blank">Uniflores</a>
+  </div>
+  <p class="footer-ig">📸 Acompanhe: <a href="https://www.instagram.com/floresdeholambraslz/" target="_blank">@floresdeholambraslz</a></p>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-banner">
+      <div class="modal-banner-icon" id="modalIcon"></div>
+      <div class="modal-title" id="modalName"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modalDetails"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLANTS = [
+  {planta:"Alecrim",exposicao:"Sol pleno (6-8h/dia)",rega:"1-2 vezes por semana, solo bem drenado",ambiente:"Externo",poda:"Regular para estimular o crescimento",adubo:"Solo arenoso e seco, adubo orgânico"},
+  {planta:"Aloes Aristata",exposicao:"Meia-sombra ou sol pleno",rega:"Pouca água, regar a cada 15 dias",ambiente:"Interno ou externo",poda:"Remover folhas secas",adubo:"Substrato para cactos e suculentas"},
+  {planta:"Amaryllis",exposicao:"Luz indireta ou sol pleno",rega:"Moderada, manter o solo úmido",ambiente:"Interno",poda:"Após a floração, cortar folhas secas",adubo:"Substrato leve com boa drenagem"},
+  {planta:"Antúrios Mini Vermelhos",exposicao:"Luz indireta",rega:"Manter o solo úmido, sem encharcar",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Antúrios Variados",exposicao:"Luz indireta",rega:"Moderada, manter o solo úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo orgânico e leve"},
+  {planta:"Aphelandras",exposicao:"Meia-sombra",rega:"2-3 vezes por semana",ambiente:"Interno",poda:"Após a floração",adubo:"Solo bem drenado"},
+  {planta:"Arrudas",exposicao:"Sol pleno",rega:"1-2 vezes por semana, solo seco entre regas",ambiente:"Externo",poda:"Regular para manter forma",adubo:""},
+  {planta:"Asplênios Osaka Variados",exposicao:"Luz indireta, sombra parcial",rega:"2-3 vezes por semana, solo úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica, adubo mensal"},
+  {planta:"Avencas Variadas",exposicao:"Luz indireta, sombra total",rega:"Mantém o solo constantemente úmido",ambiente:"Interno",poda:"Remover folhas secas para promover crescimento",adubo:"Substrato rico e com boa drenagem"},
+  {planta:"Azaléias",exposicao:"Sol pleno ou meia-sombra",rega:"2-3 vezes por semana, solo úmido",ambiente:"Externo",poda:"Após a floração para manter a forma",adubo:"Solo ácido, bem drenado"},
+  {planta:"Bambus da Sorte",exposicao:"Luz indireta ou sombra",rega:"Manter a base em água, trocando semanalmente",ambiente:"Interno",poda:"Cortar as hastes para controlar o tamanho",adubo:"Pode ser cultivado na água ou solo com adubo líquido mensal"},
+  {planta:"Begônias Beleaf",exposicao:"Luz indireta",rega:"Moderada, manter solo úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado e rico em nutrientes"},
+  {planta:"Begônias Flores Variadas",exposicao:"Luz indireta ou meia-sombra",rega:"Manter o solo úmido, sem encharcar",ambiente:"Interno ou externo",poda:"Após a floração, remover flores murchas",adubo:"Solo rico e leve"},
+  {planta:"Bonsais Diversos",exposicao:"Luz direta ou meia-sombra",rega:"Moderada, solo levemente úmido",ambiente:"Interno ou externo",poda:"Manter a forma desejada com podas frequentes",adubo:"Solo bem drenado, adubação orgânica mensal"},
+  {planta:"Bonsais de Fruta",exposicao:"Sol pleno ou meia-sombra",rega:"Solo constantemente úmido",ambiente:"Externo",poda:"Regular, para controle de forma",adubo:"Solo fértil e adubação mensal"},
+  {planta:"Bromélias Aechmea Fasciata",exposicao:"Meia-sombra ou sol pleno",rega:"Manter água no centro da planta, regar com moderação o solo",ambiente:"Interno ou externo",poda:"Remover folhas secas",adubo:"Substrato rico e leve"},
+  {planta:"Bromélias Guzmanias",exposicao:"Meia-sombra",rega:"Manter água na base, sem encharcar o solo",ambiente:"Interno ou externo",poda:"Remover folhas secas e flores murchas",adubo:"Solo bem drenado"},
+  {planta:"Bulbos Amaryllis",exposicao:"Sol pleno ou luz indireta",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno",poda:"Remover folhas secas após floração",adubo:"Solo bem drenado"},
+  {planta:"Buxinhos",exposicao:"Sol pleno ou meia-sombra",rega:"Moderada, solo ligeiramente úmido",ambiente:"Externo",poda:"Podar regularmente para manter a forma",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Cactos",exposicao:"Sol pleno ou meia-sombra",rega:"Regar uma vez por mês",ambiente:"Interno ou externo",poda:"Não necessário",adubo:"Substrato para cactos"},
+  {planta:"Cactos Raiz Própria",exposicao:"Sol pleno",rega:"Escassa, regar a cada 20 dias",ambiente:"Interno ou externo",poda:"Não necessário",adubo:"Substrato para cactos"},
+  {planta:"Callas Coloridas",exposicao:"Luz indireta ou meia-sombra",rega:"Manter o solo úmido",ambiente:"Interno",poda:"Remover folhas secas após floração",adubo:"Solo rico em nutrientes"},
+  {planta:"Celósias Coloridas",exposicao:"Sol pleno",rega:"Moderada, solo ligeiramente úmido",ambiente:"Externo ou interno",poda:"Remover flores murchas",adubo:"Solo bem drenado"},
+  {planta:"Chifres de Veado",exposicao:"Luz indireta, meia-sombra",rega:"1-2 vezes por semana, solo levemente úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Substrato para epífitas, como fibra de coco ou musgo esfagno"},
+  {planta:"Costelas de Adão",exposicao:"Luz indireta, meia-sombra",rega:"1 vez por semana, solo úmido",ambiente:"Interno",poda:"Remover folhas secas e galhos extras",adubo:"Solo fértil e bem drenado"},
+  {planta:"Crotons",exposicao:"Sol pleno ou meia-sombra",rega:"Solo ligeiramente úmido",ambiente:"Interno ou externo",poda:"Regular para controlar o tamanho",adubo:"Solo bem drenado com adubo orgânico"},
+  {planta:"Dianthus Dobrados",exposicao:"Sol pleno",rega:"Moderada, solo levemente úmido",ambiente:"Externo",poda:"Remover flores murchas para estimular nova floração",adubo:"Solo bem drenado, adubação quinzenal"},
+  {planta:"Dinheiro em Penca Pendentes",exposicao:"Luz indireta ou meia-sombra",rega:"2 vezes por semana, solo ligeiramente seco entre regas",ambiente:"Interno ou externo",poda:"Podar para controlar o crescimento",adubo:"Solo bem drenado"},
+  {planta:"Dipladênias",exposicao:"Sol pleno ou meia-sombra",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Após a floração, poda de formação",adubo:"Solo rico e bem drenado"},
+  {planta:"Dracenas Variadas",exposicao:"Luz indireta ou meia-sombra",rega:"1 vez por semana, solo seco entre regas",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Echeverias Variadas",exposicao:"Sol pleno ou meia-sombra",rega:"Pouca água, solo seco entre regas",ambiente:"Interno ou externo",poda:"Remover folhas mortas",adubo:"Solo arenoso e bem drenado"},
+  {planta:"Ervas Aromáticas Variadas",exposicao:"Sol pleno",rega:"1-2 vezes por semana, solo úmido",ambiente:"Externo ou interno em locais bem iluminados",poda:"Podar regularmente para estimular o crescimento",adubo:"Solo leve e bem drenado"},
+  {planta:"Ficus Elastica Burgundy",exposicao:"Luz indireta ou meia-sombra",rega:"1 vez por semana, solo úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Ficus Elastica Tineke",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, solo levemente úmido",ambiente:"Interno",poda:"Poda para manter a forma",adubo:"Solo bem drenado"},
+  {planta:"Fitonia",exposicao:"Luz indireta ou meia-sombra",rega:"Solo sempre úmido, 2-3 vezes por semana",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico e bem drenado"},
+  {planta:"Flor de Maio",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, solo seco entre regas",ambiente:"Interno",poda:"Remover flores murchas",adubo:"Substrato para cactos e suculentas"},
+  {planta:"Frutifera Figo",exposicao:"Sol pleno",rega:"Moderada, manter solo úmido",ambiente:"Externo",poda:"Poda anual após a colheita",adubo:"Solo bem drenado"},
+  {planta:"Frutifera Uva",exposicao:"Sol pleno",rega:"Moderada, manter solo úmido",ambiente:"Externo",poda:"Poda anual após a colheita",adubo:"Solo rico em nutrientes"},
+  {planta:"Frutífera Amora Gigante",exposicao:"Sol pleno",rega:"Diária, manter solo úmido",ambiente:"Externo",poda:"Podar para estimular o crescimento",adubo:"Solo rico em nutrientes"},
+  {planta:"Frutífera Diversas",exposicao:"Sol pleno",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Podar para estimular o crescimento",adubo:"Solo rico em nutrientes"},
+  {planta:"Frutífera Jabuticaba Sabará",exposicao:"Sol pleno ou meia-sombra",rega:"Manter solo úmido",ambiente:"Externo",poda:"Remover ramos secos",adubo:"Solo rico e úmido"},
+  {planta:"Gerânio Pendente",exposicao:"Sol pleno",rega:"Moderada, solo seco entre regas",ambiente:"Externo",poda:"Remover flores murchas para estimular nova floração",adubo:"Solo bem drenado"},
+  {planta:"Hederas Variadas",exposicao:"Meia-sombra",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno ou externo",poda:"Remover ramos secos",adubo:"Solo bem drenado"},
+  {planta:"Hibiscos Dobrados",exposicao:"Sol pleno ou meia-sombra",rega:"2-3 vezes por semana, solo úmido",ambiente:"Externo",poda:"Podar após a floração",adubo:"Solo bem drenado"},
+  {planta:"Hidroponia",exposicao:"Sol pleno ou meia-sombra, dependendo da planta",rega:"Água constantemente circulando",ambiente:"Interno ou externo",poda:"Remover folhas mortas",adubo:"Nutrientes hidropônicos"},
+  {planta:"Hoyas Variadas",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, solo seco entre regas",ambiente:"Interno",poda:"Remover flores secas",adubo:"Solo bem drenado"},
+  {planta:"Hypoestes Jardineiras",exposicao:"Luz indireta ou sombra parcial",rega:"Moderada, solo levemente úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Jiboias",exposicao:"Luz indireta ou sombra parcial",rega:"Moderada, solo úmido",ambiente:"Interno",poda:"Remover folhas secas e ramos mortos",adubo:"Solo bem drenado"},
+  {planta:"Kalanchoes Bicolores",exposicao:"Luz direta ou meia-sombra",rega:"Pouca, solo seco entre regas",ambiente:"Externo ou interno",poda:"Remover flores murchas",adubo:"Substrato para suculentas"},
+  {planta:"Kalanchoes Dobrados",exposicao:"Sol pleno ou meia-sombra",rega:"Solo seco entre regas",ambiente:"Externo ou interno",poda:"Remover flores murchas",adubo:"Solo arenoso e bem drenado"},
+  {planta:"Kalanchoes Mini",exposicao:"Sol pleno ou meia-sombra",rega:"Solo seco entre regas",ambiente:"Externo ou interno",poda:"Remover flores murchas",adubo:"Solo bem drenado"},
+  {planta:"Lavândulas Angustifolias",exposicao:"Sol pleno",rega:"Moderada, solo seco entre regas",ambiente:"Externo",poda:"Poda regular após floração para estimular novo crescimento",adubo:"Solo bem drenado"},
+  {planta:"Lágrimas de Cristo",exposicao:"Sol pleno ou meia-sombra",rega:"Solo úmido, mas não encharcado",ambiente:"Externo ou interno",poda:"Poda leve para controle de crescimento",adubo:"Solo bem drenado"},
+  {planta:"Lírios Variados",exposicao:"Sol pleno ou meia-sombra",rega:"Solo úmido, sem encharcar",ambiente:"Externo ou interno",poda:"Remover flores murchas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Lírios da Paz",exposicao:"Luz indireta",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno",poda:"Remover flores murchas e folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Marantas Variadas",exposicao:"Luz indireta ou sombra parcial",rega:"Solo sempre úmido, 2-3 vezes por semana",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado e rico"},
+  {planta:"Ora Pro Nobis Dourada",exposicao:"Sol pleno",rega:"Moderada, solo ligeiramente úmido",ambiente:"Externo",poda:"Poda regular para estimular o crescimento",adubo:"Solo fértil e bem drenado"},
+  {planta:"Orquídeas",exposicao:"Luz indireta, meia-sombra",rega:"Moderada, solo úmido",ambiente:"Interno",poda:"Remover flores secas após a floração",adubo:"Substrato para orquídeas"},
+  {planta:"Palmeiras",exposicao:"Luz indireta, meia-sombra",rega:"Moderada, solo úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Patas de Elefante",exposicao:"Sol pleno ou meia-sombra",rega:"Escassa, solo seco entre regas",ambiente:"Interno ou externo",poda:"Remover folhas secas",adubo:"Solo arenoso"},
+  {planta:"Peperômias",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Philodendrons",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Pimenta",exposicao:"Sol pleno",rega:"Moderada, solo ligeiramente úmido",ambiente:"Externo ou interno com luz solar direta",poda:"Podar após frutificação",adubo:"Solo fértil e bem drenado"},
+  {planta:"Podocarpus",exposicao:"Sol pleno ou meia-sombra",rega:"Moderada, solo úmido",ambiente:"Externo ou interno",poda:"Regular para manter a forma",adubo:"Solo rico"},
+  {planta:"Primaveras",exposicao:"Sol pleno",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Poda leve após floração",adubo:"Solo rico e bem drenado"},
+  {planta:"Rendas Portuguesas",exposicao:"Meia-sombra ou luz indireta",rega:"Moderada, solo ligeiramente úmido",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Rosas do Deserto",exposicao:"Sol pleno",rega:"Solo seco entre regas",ambiente:"Externo",poda:"Remover flores murchas e galhos mortos",adubo:"Solo arenoso e bem drenado"},
+  {planta:"Roseiras",exposicao:"Sol pleno",rega:"Moderada, solo ligeiramente úmido",ambiente:"Externo",poda:"Remover flores murchas",adubo:"Solo bem drenado"},
+  {planta:"Samambaias",exposicao:"Luz indireta ou sombra parcial",rega:"Solo úmido, sem encharcar",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo rico em matéria orgânica"},
+  {planta:"Suculentas Variadas",exposicao:"Sol pleno ou meia-sombra",rega:"Pouca água, solo seco entre regas",ambiente:"Interno ou externo",poda:"Remover folhas secas",adubo:"Solo arenoso"},
+  {planta:"Sunpatiens",exposicao:"Sol pleno ou meia-sombra",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Remover flores secas",adubo:"Solo bem drenado"},
+  {planta:"Torenias",exposicao:"Meia-sombra ou luz indireta",rega:"Solo úmido, sem encharcar",ambiente:"Externo",poda:"Remover flores murchas",adubo:"Solo leve e rico"},
+  {planta:"Tostões Variados",exposicao:"Luz indireta ou sombra parcial",rega:"Moderada, solo seco entre regas",ambiente:"Interno",poda:"Remover folhas secas",adubo:"Solo bem drenado"},
+  {planta:"Trevos de Quatro Folhas",exposicao:"Luz indireta ou sombra parcial",rega:"Solo úmido, sem encharcar",ambiente:"Interno ou externo",poda:"Não é necessário",adubo:"Solo bem drenado"},
+  {planta:"Tuias Strickita",exposicao:"Sol pleno",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Poda regular para manter o formato",adubo:"Solo bem drenado"},
+  {planta:"Vincas",exposicao:"Sol pleno ou meia-sombra",rega:"Moderada, solo úmido",ambiente:"Externo",poda:"Remover flores murchas",adubo:"Solo bem drenado"},
+  {planta:"Violetas",exposicao:"Luz indireta ou meia-sombra",rega:"Moderada, evitar molhar as folhas",ambiente:"Interno",poda:"Remover flores murchas",adubo:"Solo leve e rico"},
+];
+
+const EMOJI_MAP = {
+  default:"🌿", cactus:"🌵", suculenta:"🪴", orquídea:"🌸", orquidea:"🌸",
+  rosa:"🌹", roseira:"🌹", lavanda:"💜", bambu:"🎋", bromélia:"🌺",
+  bromelia:"🌺", palmeira:"🌴", bonsai:"🌳", frutífera:"🍓", frutifera:"🍓",
+  figo:"🍈", uva:"🍇", amora:"🫐", jabuticaba:"🍇", pimenta:"🌶️",
+  ervas:"🌿", alecrim:"🌿", lavând:"💜", lírio:"🌷", lilio:"🌷",
+  violeta:"💜", antúrio:"🌺", antúrios:"🌺", begônia:"🌸", azaléia:"🌸",
+  hibisco:"🌺", girassol:"🌻", primavera:"🌸", samambaia:"🌿", avenca:"🌿",
+  fitônia:"🍃", fitonia:"🍃", jiboia:"🌿", philodendron:"🌿",
+  costela:"🌿", dracena:"🌿",
+};
+function getEmoji(name) {
+  const n = name.toLowerCase();
+  for (const [k,v] of Object.entries(EMOJI_MAP)) { if (n.includes(k)) return v; }
+  return EMOJI_MAP.default;
+}
+function norm(s) {
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+}
+
+let activeAmbiente = new Set();
+let activeExpos    = new Set();
+
+const ambienteValues = [...new Set(PLANTS.map(p=>p.ambiente).filter(Boolean))].sort();
+const exposValues    = [...new Set(PLANTS.map(p=>p.exposicao).filter(Boolean))].sort();
+
+function buildChips(container, values, activeSet) {
+  const el = document.getElementById(container);
+  values.forEach(v => {
+    const c = document.createElement("span");
+    c.className = "chip";
+    c.textContent = v;
+    c.addEventListener("click", () => {
+      if (activeSet.has(v)) { activeSet.delete(v); c.classList.remove("selected"); }
+      else { activeSet.add(v); c.classList.add("selected"); }
+      render();
+    });
+    el.appendChild(c);
+  });
+}
+buildChips("ambienteChips",  ambienteValues, activeAmbiente);
+buildChips("exposicaoChips", exposValues,    activeExpos);
+
+function badgeClass(amb) {
+  const a=(amb||"").toLowerCase();
+  return a==="interno"?"badge-int": a==="externo"?"badge-ext":"badge-both";
+}
+function badgeLabel(amb) {
+  const a=(amb||"").toLowerCase();
+  return a==="interno"?"🏠 Interno": a==="externo"?"☀️ Externo":"🌐 Ambos";
+}
+
+function render() {
+  const q = norm(document.getElementById("searchInput").value);
+  const grid  = document.getElementById("plantGrid");
+  const empty = document.getElementById("emptyState");
+  let results = PLANTS;
+  if (q) results = results.filter(p => norm(p.planta).includes(q));
+  if (activeAmbiente.size) results = results.filter(p => activeAmbiente.has(p.ambiente));
+  if (activeExpos.size)    results = results.filter(p => activeExpos.has(p.exposicao));
+  document.getElementById("resultsCount").textContent =
+    results.length ? `${results.length} planta${results.length>1?"s":""}` : "";
+  if (!results.length) { grid.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  grid.innerHTML = results.map((p,i) => `
+    <div class="plant-card" style="animation-delay:${Math.min(i,20)*30}ms"
+         onclick="openModal('${p.planta.replace(/'/g,"\\'")}')">
+      <div class="card-header">
+        <div class="card-name">${p.planta}</div>
+        <span class="badge ${badgeClass(p.ambiente)}">${badgeLabel(p.ambiente)}</span>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="info-icon">☀️</span><span class="info-label">Sol</span><span class="info-val">${p.exposicao}</span></div>
+        <div class="info-row"><span class="info-icon">💧</span><span class="info-label">Rega</span><span class="info-val">${p.rega}</span></div>
+        <div class="info-row"><span class="info-icon">✂️</span><span class="info-label">Poda</span><span class="info-val">${p.poda||"-"}</span></div>
+      </div>
+    </div>`).join("");
+}
+
+function openModal(name) {
+  const p = PLANTS.find(x=>x.planta===name);
+  if (!p) return;
+  document.getElementById("modalIcon").textContent = getEmoji(p.planta);
+  document.getElementById("modalName").textContent = p.planta;
+  document.getElementById("modalDetails").innerHTML = `
+    <div class="detail-tile">
+      <div class="detail-tile-head"><span>☀️</span> Exposição ao Sol</div>
+      <div class="detail-tile-val">${p.exposicao||"-"}</div>
+    </div>
+    <div class="detail-tile t-rega">
+      <div class="detail-tile-head"><span>💧</span> Rega</div>
+      <div class="detail-tile-val">${p.rega||"-"}</div>
+    </div>
+    <div class="detail-tile t-amb">
+      <div class="detail-tile-head"><span>🏡</span> Ambiente</div>
+      <div class="detail-tile-val">${p.ambiente||"-"}</div>
+    </div>
+    <div class="detail-tile t-poda">
+      <div class="detail-tile-head"><span>✂️</span> Poda</div>
+      <div class="detail-tile-val">${p.poda||"-"}</div>
+    </div>
+    <div class="detail-tile t-adubo" style="grid-column:1/-1">
+      <div class="detail-tile-head"><span>🌱</span> Adubo / Substrato</div>
+      <div class="detail-tile-val">${p.adubo||"Não informado"}</div>
+    </div>`;
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeModal(e) {
+  if (e && e.target!==document.getElementById("overlay")) return;
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape"){
+    document.getElementById("overlay").classList.remove("open");
+    document.body.style.overflow="";
+  }
+});
+function toggleFilters() {
+  document.getElementById("filterPanel").classList.toggle("open");
+  document.getElementById("filterToggle").classList.toggle("active");
+}
+document.getElementById("searchInput").addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
